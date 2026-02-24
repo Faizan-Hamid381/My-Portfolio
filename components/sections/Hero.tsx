@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Clock, Terminal } from "lucide-react";
 import { TextReveal } from "../ui/TextReveal";
 
@@ -153,7 +154,7 @@ export const Hero = () => {
                     initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                     animate={{ opacity: 1, scale: 1, rotate: 0 }}
                     transition={{ duration: 1.5, ease: "backOut", delay: 0.5 }}
-                    className="relative group hidden lg:block"
+                    className="relative group flex justify-center mt-12 lg:mt-0 w-full lg:w-auto"
                 >
                     {/* Elaborate glowing borders and rings */}
                     <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-full blur-2xl opacity-40 group-hover:opacity-70 transition duration-1000 animate-[spin_10s_linear_infinite]" />
@@ -163,18 +164,21 @@ export const Hero = () => {
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        className="absolute -inset-8 border border-white/10 rounded-full border-dashed pointer-events-none"
+                        className="absolute -inset-8 border border-white/10 rounded-full border-dashed pointer-events-none hidden md:block"
                     />
                     <motion.div
                         animate={{ rotate: -360 }}
                         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                        className="absolute -inset-12 border border-cyan-500/20 rounded-full pointer-events-none"
+                        className="absolute -inset-12 border border-cyan-500/20 rounded-full pointer-events-none hidden md:block"
                     />
 
-                    <div className="relative w-80 h-80 rounded-full p-2 glass overflow-hidden flex items-center justify-center bg-[#050505] shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-                        <img
+                    <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full p-2 glass overflow-hidden flex items-center justify-center bg-[#050505] shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+                        <Image
                             src="/myprofile.jpg"
                             alt="Faizan Hamid"
+                            width={320}
+                            height={320}
+                            priority
                             className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                         />
                         {/* Inner glass overlay for extra premium feel */}
