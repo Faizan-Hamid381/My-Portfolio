@@ -179,7 +179,7 @@ export const Hero = () => {
                             width={320}
                             height={320}
                             priority
-                            className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
+                            className="w-full h-full object-cover rounded-full md:grayscale hover:grayscale-0 transition-all duration-700"
                         />
                         {/* Inner glass overlay for extra premium feel */}
                         <div className="absolute inset-0 rounded-full shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] pointer-events-none" />
