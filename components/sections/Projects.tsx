@@ -1,19 +1,32 @@
 "use client";
 
+import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Database, Code2, Server, Layout, ArrowUpRight } from "lucide-react";
 import { TextReveal } from "../ui/TextReveal";
 import { NoiseOverlay } from "../ui/NoiseOverlay";
 
-const projects = [
+type ProjectItem = {
+    title: string;
+    description: string;
+    tech: string[];
+    icon: ReactNode;
+    color: string;
+    borderGlow: string;
+    spanClass: string;
+    image?: string;
+};
+
+const projects: ProjectItem[] = [
     {
-        title: "E-Commerce Core",
+        title: "BuyVuy - E-commerce Store",
         description: "A high-performance scalable backend for a massive e-commerce platform.",
         tech: ["Node.js", "Redis", "PostgreSQL"],
         icon: <Server className="text-cyan-400 mb-4" size={32} />,
         color: "from-cyan-500/20 to-blue-500/5",
         borderGlow: "group-hover:shadow-[0_0_40px_rgba(6,182,212,0.4)] group-hover:border-cyan-400/50",
         spanClass: "md:col-span-2 md:row-span-2", // Large priority card
+        image: "/buyvuy-preview.png",
     },
     {
         title: "Fast Food POS System",
@@ -90,32 +103,42 @@ export const Projects = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.7, delay: idx * 0.15, type: "spring", stiffness: 50 }}
-                        className={`group glass rounded-3xl p-8 relative overflow-hidden transition-all duration-700 border border-white/5 ${project.borderGlow} ${project.spanClass} flex flex-col`}
+                        className={`group glass rounded-3xl relative overflow-hidden transition-all duration-700 border border-white/5 ${project.borderGlow} ${project.spanClass} flex flex-col`}
                     >
                         <NoiseOverlay />
-                        <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-30 group-hover:opacity-100 transition-opacity duration-700`} />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0`} />
 
-                        <div className="relative z-10 flex flex-col h-full">
-                            <div className="flex justify-between items-start mb-6">
-                                <div className="p-4 bg-[#0a0a0a]/50 rounded-2xl glass border border-white/5 shadow-inner">
-                                    {project.icon}
-                                </div>
+                        {project.image && (
+                            <div className="relative w-full h-[50%] md:h-[55%] shrink-0 z-10 border-b border-white/5">
+                                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                            </div>
+                        )}
+
+                        <div className="relative z-10 flex flex-col flex-1 p-6 md:p-8">
+                            <div className={`flex justify-between items-start ${project.image ? "mb-2" : "mb-6"}`}>
+                                {!project.image ? (
+                                    <div className="p-4 bg-[#0a0a0a]/50 rounded-2xl glass border border-white/5 shadow-inner">
+                                        {project.icon}
+                                    </div>
+                                ) : (
+                                    <div />
+                                )}
                                 <a href="#" className="p-3 glass rounded-full opacity-0 -translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 hover:bg-white/10 hover:text-cyan-300 border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]" aria-label="View Project">
                                     <ExternalLink size={20} />
                                 </a>
                             </div>
 
                             <div className="mt-auto">
-                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
+                                <h3 className={`font-bold text-white tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all ${project.image ? "text-xl md:text-2xl mb-2" : "text-2xl md:text-3xl mb-3"}`}>
                                     {project.title}
                                 </h3>
-                                <p className="text-gray-400 mb-8 leading-relaxed line-clamp-2 md:line-clamp-none max-w-md">
+                                <p className={`text-gray-400 leading-relaxed line-clamp-2 md:line-clamp-none max-w-md ${project.image ? "mb-4 text-sm md:text-base" : "mb-8"}`}>
                                     {project.description}
                                 </p>
 
                                 <div className="flex flex-wrap gap-2">
                                     {project.tech.map((tech) => (
-                                        <span key={tech} className="px-4 py-1.5 text-xs font-semibold font-mono text-gray-300 bg-white/5 border border-white/10 rounded-full flex items-center gap-1.5 backdrop-blur-md">
+                                        <span key={tech} className="px-3 py-1.5 text-xs font-semibold font-mono text-gray-300 bg-white/5 border border-white/10 rounded-full flex items-center gap-1.5 backdrop-blur-md">
                                             {tech}
                                         </span>
                                     ))}
