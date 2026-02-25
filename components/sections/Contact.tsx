@@ -1,11 +1,48 @@
 "use client";
 
+import { useState } from "react";
+
 import { motion } from "framer-motion";
 import { Send, MapPin, Mail, Sparkles } from "lucide-react";
 import { TextReveal } from "../ui/TextReveal";
 import { NoiseOverlay } from "../ui/NoiseOverlay";
 
 export const Contact = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setIsSuccess(false);
+
+        const formData = new FormData(e.currentTarget);
+        formData.append("access_key", "54c05df5-3047-4331-a5d4-6dc5674828f5");
+
+        try {
+            const res = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
+            });
+
+            if (res.ok) {
+                setIsSuccess(true);
+                e.currentTarget.reset(); // Clear form on success
+                // Temporarily show success state, then revert
+                setTimeout(() => {
+                    setIsSuccess(false);
+                }, 3000);
+            } else {
+                alert("Something went wrong. Please try again later.");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("Network error. Please try again later.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <section className="py-32 px-6 max-w-7xl mx-auto relative z-10 mb-24" id="contact">
             <div className="flex flex-col lg:flex-row gap-16 items-start">
@@ -68,10 +105,7 @@ export const Contact = () => {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8, type: "spring", stiffness: 50 }}
                     className="flex-1 w-full glass rounded-3xl p-8 md:p-12 space-y-8 relative overflow-hidden group border border-white/10 hover:border-cyan-500/30 transition-colors duration-500 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        alert("Thanks for reaching out! (Demo Form)");
-                    }}
+                    onSubmit={handleSubmit}
                 >
                     <NoiseOverlay />
                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
@@ -82,9 +116,11 @@ export const Contact = () => {
                             <input
                                 type="text"
                                 id="name"
+                                name="name"
                                 required
                                 className="w-full bg-[#0a0a0a]/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition-all font-light shadow-inner placeholder:text-gray-600"
                                 placeholder="John Doe"
+                                disabled={isSubmitting}
                             />
                         </div>
                         <div className="space-y-2">
@@ -92,32 +128,45 @@ export const Contact = () => {
                             <input
                                 type="email"
                                 id="email"
+                                name="email"
                                 required
                                 className="w-full bg-[#0a0a0a]/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition-all font-light shadow-inner placeholder:text-gray-600"
                                 placeholder="john@example.com"
+                                disabled={isSubmitting}
                             />
                         </div>
                         <div className="space-y-2">
                             <label htmlFor="message" className="text-xs font-mono font-medium text-gray-400 ml-1 uppercase tracking-widest">Message</label>
                             <textarea
                                 id="message"
+                                name="message"
                                 required
                                 rows={5}
                                 className="w-full bg-[#0a0a0a]/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition-all resize-none font-light shadow-inner placeholder:text-gray-600"
                                 placeholder="Tell me about your project..."
+                                disabled={isSubmitting}
                             />
                         </div>
                     </div>
 
                     <button
                         type="submit"
-                        className="relative z-10 w-full bg-white text-black font-bold rounded-2xl px-8 py-5 flex items-center justify-center gap-3 hover:bg-gray-200 transition-all hover:scale-[1.02] shadow-[0_0_30px_rgba(255,255,255,0.2)] ml-auto overflow-hidden group/btn"
+                        disabled={isSubmitting || isSuccess}
+                        className={`relative z-10 w-full font-bold rounded-2xl px-8 py-5 flex items-center justify-center gap-3 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] ml-auto overflow-hidden group/btn ${isSuccess
+                                ? "bg-cyan-500 text-white shadow-[0_0_40px_rgba(6,182,212,0.4)]"
+                                : "bg-white text-black hover:bg-gray-200 hover:scale-[1.02]"
+                            } ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
                     >
                         <span className="relative z-10 flex items-center gap-2 text-lg">
-                            Send Request <Send size={20} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                            {isSubmitting ? "Sending..." : isSuccess ? "Message Sent!" : "Send Request"}
+                            {!isSubmitting && !isSuccess && <Send size={20} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />}
                         </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300" />
-                        <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20 scale-150 rotate-12 opacity-0 group-hover/btn:opacity-100 group-hover/btn:rotate-45 transition-all duration-700 pointer-events-none" size={64} />
+                        {!isSuccess && (
+                            <>
+                                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300" />
+                                <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20 scale-150 rotate-12 opacity-0 group-hover/btn:opacity-100 group-hover/btn:rotate-45 transition-all duration-700 pointer-events-none" size={64} />
+                            </>
+                        )}
                     </button>
                 </motion.form>
             </div>
