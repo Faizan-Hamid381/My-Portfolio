@@ -36,6 +36,7 @@ const projects: ProjectItem[] = [
         color: "from-purple-500/20 to-pink-500/5",
         borderGlow: "group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] group-hover:border-purple-400/50",
         spanClass: "md:col-span-1 md:row-span-2", // Tall card
+        image: "/fast-food.png",
     },
     {
         title: "Advanced Web Scraper",
